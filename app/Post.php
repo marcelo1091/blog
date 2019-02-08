@@ -13,7 +13,8 @@ class Post extends Model
     //Times Stamps
     public $timestamps = true;
 
-    public function User(){
+    public function User()
+    {
         return $this->belongsTo('App\User');
     }
 }

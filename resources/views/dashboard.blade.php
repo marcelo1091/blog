@@ -7,7 +7,9 @@
             <div class="card">
                 <div class="card-header">Dashboard</div>
                 </div>
+                <br>
                 <a class="btn btn-primary" href="{{route('create')}}">Create Post</a>
+                <br><br>
                 <h3>Your Blog Post</h3>
                 @if(count($posts) > 0)
                     <table class="table table-striped">
@@ -19,12 +21,13 @@
                         @foreach($posts as $post)
                             <tr>
                                 <td>{{$post->title}}</td>
-                                <td><a href="{{route('edit',['id' =>$post->id])}}" class="btn btn-primary">Edit</td>
                                 <td>
                                     {!!Form::open(['action' => ['PostControler@destroy', $post->id], 'method' =>'POST', 'class' => 'float-right'])!!}
                                         {{Form::hidden('_method','DELETE')}}
                                         {{Form::submit('Delete',['class' => 'btn btn-danger'])}}
                                     {!!Form::close()!!}
+                                    <a href="{{route('edit',['id' =>$post->id])}}" class="btn btn-primary float-right">Edit</a>                    
+                                    <a href="{{route('posts',['id' =>$post->id])}}" class="btn btn-primary float-right">Show</a>
                                 </td>
                             </tr> 
                         @endforeach
