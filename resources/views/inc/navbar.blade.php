@@ -17,9 +17,6 @@
                         <a class="nav-link" href="{{route('about')}}">O Nas</a>     
                     </li>
                     <li class="nav-item ">  
-                        <a class="nav-link" href="{{route('services')}}">Usługi</a>
-                    </li>
-                    <li class="nav-item ">  
                         <a class="nav-link" href="{{route('posts')}}">Blog</a>
                     </li>
                   </ul>

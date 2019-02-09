@@ -16,8 +16,8 @@ return 'this is users '.$id;
 });
  */
 
-Route::get('/home', 'HomeController@index')->name('home');
-Route::get('/', 'HomeController@index');
+Route::get('/home', 'PagesController@index')->name('home');
+Route::get('/', 'PagesController@index');
 Route::get('/about', 'PagesController@about')->name('about');
 Route::get('/services', 'PagesController@services')->name('services');
 Route::get('/logout1', 'PagesController@index')->name('logout1');

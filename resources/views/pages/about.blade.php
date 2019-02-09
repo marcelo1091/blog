@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
 @section('content')
-        <h1>{{$title}}</h1>
+        <h1>O Nas</h1>
         <p>BlogSpot O Nas</p>
 @endsection

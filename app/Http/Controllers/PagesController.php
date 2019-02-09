@@ -2,20 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Post;
+
 class PagesController extends Controller
 {
-    public function about()
+    public function index()
     {
-        $title = 'About Us';
-        return view('pages.about')->with('title', $title);
+        $posts = Post::orderBy('id', 'desc')->take(5)->get();
+        return view('pages.home')->with('posts', $posts);
     }
 
-    public function services()
+    public function about()
     {
-        $data = array(
-            'title'    => 'Services',
-            'services' => ['Blog', 'coś', 'coś'],
-        );
-        return view('pages.services')->with($data);
+        return view('pages.about');
     }
 }
