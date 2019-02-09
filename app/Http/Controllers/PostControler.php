@@ -49,6 +49,23 @@ class PostControler extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
+
+    public function fileUploader(Request $request)
+    {
+        //Get filename with the extension
+        $filenameWithExt = $request->file('cover_image')->getClientOriginalName();
+        //Get just filename
+        $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
+        //Get just ext
+        $extension = $request->file('cover_image')->getClientOriginalExtension();
+        //File Name To Store
+        $fileNameToStore = $filename . '_' . time() . '.' . $extension;
+        //Upload Image
+        $path = $request->file('cover_image')->storeAs('public/cover_images', $fileNameToStore);
+
+        return $fileNameToStore;
+    }
+
     public function store(Request $request)
     {
         $this->validate($request, [
@@ -59,16 +76,7 @@ class PostControler extends Controller
 
         //Handle File Upload
         if ($request->hasFile('cover_image')) {
-            //Get filename with the extension
-            $filenameWithExt = $request->file('cover_image')->getClientOriginalName();
-            //Get just filename
-            $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
-            //Get just ext
-            $extension = $request->file('cover_image')->getClientOriginalExtension();
-            //File Name To Store
-            $fileNameToStore = $filename . '_' . time() . '.' . $extension;
-            //Upload Image
-            $path = $request->file('cover_image')->storeAs('public/cover_images', $fileNameToStore);
+            $fileNameToStore = $this->fileUploader($request);
         } else {
             $fileNameToStore = 'noimage.jpg';
         }
@@ -128,16 +136,7 @@ class PostControler extends Controller
 
         //Handle File Upload
         if ($request->hasFile('cover_image')) {
-            //Get filename with the extension
-            $filenameWithExt = $request->file('cover_image')->getClientOriginalName();
-            //Get just filename
-            $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
-            //Get just ext
-            $extension = $request->file('cover_image')->getClientOriginalExtension();
-            //File Name To Store
-            $fileNameToStore = $filename . '_' . time() . '.' . $extension;
-            //Upload Image
-            $path = $request->file('cover_image')->storeAs('public/cover_images', $fileNameToStore);
+            $fileNameToStore = $this->fileUploader($request);
         }
 
         //Create Post
