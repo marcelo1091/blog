@@ -3,67 +3,28 @@
 namespace App\Http\Controllers;
 
 use App\Post;
+use App\Services\FileUploader;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\View\View;
 
 class PostControler extends Controller
 {
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
+    public function __construct(FileUploader $fileUploader)
     {
         $this->middleware('auth', ['except' => ['index', 'show']]);
+        $this->fileUploader = $fileUploader;
     }
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
-
-        //$post = Post::where('title', 'Post2')->get();
-        //$posts = DB::select('SELECT * FROM posts');
-        //$posts = Post::orderBy('title', 'asc')->get();
-        $posts = Post::orderBy('id', 'asc')->paginate(10);
+        $posts = Post::orderBy('id', 'desc')->paginate(7);
         return view('posts.index')->with('posts', $posts);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create()
     {
         return view('posts.create');
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-
-    public function fileUploader(Request $request)
-    {
-        //Get filename with the extension
-        $filenameWithExt = $request->file('cover_image')->getClientOriginalName();
-        //Get just filename
-        $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
-        //Get just ext
-        $extension = $request->file('cover_image')->getClientOriginalExtension();
-        //File Name To Store
-        $fileNameToStore = $filename . '_' . time() . '.' . $extension;
-        //Upload Image
-        $path = $request->file('cover_image')->storeAs('public/cover_images', $fileNameToStore);
-
-        return $fileNameToStore;
     }
 
     public function store(Request $request)
@@ -74,59 +35,38 @@ class PostControler extends Controller
             'cover_image' => 'image|nullable|max:1999',
         ]);
 
-        //Handle File Upload
         if ($request->hasFile('cover_image')) {
-            $fileNameToStore = $this->fileUploader($request);
+            $fileNameToStore = $this->fileUploader->upload($request->file('cover_image'), 'public/cover_images');
         } else {
             $fileNameToStore = 'noimage.jpg';
         }
-        //Create Post
+
         $post              = new Post;
         $post->title       = $request->input('title');
         $post->body        = $request->input('body');
         $post->user_id     = auth()->user()->id;
         $post->cover_image = $fileNameToStore;
         $post->save();
-        return redirect('/posts')->with('success', 'Post Created');
+        return redirect('/posts')->with('success', 'Wpis Dodany');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
+    public function show(int $id): View
     {
         $post = Post::find($id);
         return view('posts.show')->with('post', $post);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
+    public function edit(int $id): View
     {
         $post = Post::find($id);
 
-        //check for correct user
         if (auth()->user()->id !== $post->user_id) {
-            return redirect('/posts')->with('error', 'You do not edit this post');
+            return redirect('/posts')->with('error', 'Nie Możesz Edytować Tego Wpisu');
         }
 
         return view('posts.edit')->with('post', $post);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request, $id)
     {
         $this->validate($request, [
@@ -134,12 +74,10 @@ class PostControler extends Controller
             'body'  => 'required',
         ]);
 
-        //Handle File Upload
         if ($request->hasFile('cover_image')) {
-            $fileNameToStore = $this->fileUploader($request);
+            $fileNameToStore = $this->fileUploader->upload($request->file('cover_image'), 'public/cover_images');
         }
 
-        //Create Post
         $post        = Post::find($id);
         $post->title = $request->input('title');
         $post->body  = $request->input('body');
@@ -147,30 +85,22 @@ class PostControler extends Controller
             $post->cover_image = $fileNameToStore;
         }
         $post->save();
-        return redirect('/posts')->with('success', 'Post Updated');
+        return redirect('/posts')->with('success', 'Zaktualizowano Wpis');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
     {
         $post = Post::find($id);
 
-        //check for correct user
         if (auth()->user()->id !== $post->user_id) {
-            return redirect('/posts')->with('error', 'You do not delete this post');
+            return redirect('/posts')->with('error', 'Nie Możesz Usunąć Tego Wpisu');
         }
 
         if ($post->cover_image != 'noimage.jpg') {
-            //Delete Image
             Storage::delete('public/cover_images/' . $post->cover_image);
         }
 
         $post->delete();
-        return redirect('/posts')->with('success', 'Post Removed');
+        return redirect('/posts')->with('success', 'Wpis Usunięty');
     }
 }

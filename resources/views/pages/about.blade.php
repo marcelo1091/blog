@@ -2,5 +2,5 @@
 
 @section('content')
         <h1>{{$title}}</h1>
-        <p>This is about pade with about</p>
+        <p>BlogSpot O Nas</p>
 @endsection

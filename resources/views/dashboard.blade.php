@@ -26,8 +26,8 @@
                                         {{Form::hidden('_method','DELETE')}}
                                         {{Form::submit('Delete',['class' => 'btn btn-danger'])}}
                                     {!!Form::close()!!}
-                                    <a href="{{route('edit',['id' =>$post->id])}}" class="btn btn-primary float-right">Edit</a>                    
-                                    <a href="{{route('posts',['id' =>$post->id])}}" class="btn btn-primary float-right">Show</a>
+                                    <a href="{{route('posts.edit',['id' =>$post->id])}}" class="btn btn-primary float-right">Edit</a>                    
+                                    <a href="{{ route('posts.show',['id'=>$post->id])}}"class="btn btn-primary float-right">Show</a>
                                 </td>
                             </tr> 
                         @endforeach

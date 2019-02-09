@@ -16,13 +16,13 @@ return 'this is users '.$id;
 });
  */
 
-Route::get('/home', 'PagesController@index')->name('home');
-Route::get('/', 'PagesController@index');
+Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/', 'HomeController@index');
 Route::get('/about', 'PagesController@about')->name('about');
 Route::get('/services', 'PagesController@services')->name('services');
 Route::get('/logout1', 'PagesController@index')->name('logout1');
 Route::get('/create', 'PostControler@create')->name('create');
-Route::get('/edit/{id}', 'PostControler@edit')->name('edit');
+Route::get('/profile/{id}', 'UserController@profile')->name('profile');
 
 Route::resource('posts', 'PostControler', [
     'names' => [
