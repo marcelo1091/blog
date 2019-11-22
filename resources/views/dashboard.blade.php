@@ -28,6 +28,7 @@
                                     {!!Form::close()!!}
                                     <a href="{{route('posts.edit',['id' =>$post->id])}}" class="btn btn-primary float-right">Edit</a>                    
                                     <a href="{{ route('posts.show',['id'=>$post->id])}}"class="btn btn-primary float-right">Show</a>
+                                    dfsdfsfdsfsdf
                                 </td>
                             </tr> 
                         @endforeach
